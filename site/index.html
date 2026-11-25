@@ -1,0 +1,381 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<title>TOUGH. · an unofficial G-SHOCK fan concept</title>
+<meta name="description" content="Unofficial fan concept: a drop-test landing page for a shock-resistant watch. Not affiliated with Casio.">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<meta property="og:title" content="TOUGH. · a drop-test fan concept">
+<meta property="og:description" content="Drop the watch. Break the page. It's fine.">
+<meta property="og:image" content="https://tough.yan.io.vn/og.jpg">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#F3EC00">
+<script defer src="https://stats.yan.io.vn/script.js" data-website-id="d694cab7-35af-49b7-8af4-1f40791be92c" data-domains="tough.yan.io.vn"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo+Black&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+:root{--y:#F3EC00;--k:#0B0B0B;--r:#E8202A;--o:#FF5A00;--mono:'IBM Plex Mono',ui-monospace,monospace}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--y);color:var(--k);-webkit-font-smoothing:antialiased;overscroll-behavior:none}
+body{font-family:'Archivo Black',system-ui,sans-serif}
+#hero{position:relative;height:100svh;min-height:600px;overflow:hidden;user-select:none;-webkit-user-select:none;cursor:pointer}
+#tilt{position:absolute;inset:0;transform-origin:50% 100%;will-change:transform}
+#stage{position:absolute;inset:0;will-change:transform}
+#dim{position:absolute;inset:0;background:#0B0B0B;opacity:0;pointer-events:none;z-index:9}
+canvas{position:absolute;left:0;top:0;width:100%;height:100%;display:block}
+#fx{pointer-events:none}
+.nav{position:absolute;left:0;right:0;top:0;height:64px;display:flex;align-items:center;justify-content:space-between;padding:0 20px;z-index:5;pointer-events:none}
+.brand{font:400 24px/1 'Archivo Black';letter-spacing:.02em}
+.links{display:flex;gap:22px;font:600 12px/1 var(--mono);letter-spacing:.12em}
+.links span:first-child{color:var(--r);border-bottom:2px solid var(--r);padding-bottom:6px}
+@media (max-width:560px){.links{display:none}}
+#snd{pointer-events:auto;font:600 11px/1 var(--mono);letter-spacing:.14em;background:none;border:2px solid var(--k);padding:8px 10px;cursor:pointer;color:var(--k)}
+.tag{position:absolute;left:20px;top:74px;font:600 12px/1 var(--mono);letter-spacing:.16em;z-index:4;pointer-events:none;display:flex;gap:10px;align-items:center}
+.tag i{display:inline-block;width:46px;height:8px;background:repeating-linear-gradient(115deg,var(--k) 0 5px,transparent 5px 9px)}
+.panels{position:absolute;left:0;right:0;display:flex;justify-content:center;gap:12px;z-index:4;pointer-events:none;padding:0 16px}
+.p{position:relative;border:2px solid var(--r);padding:9px 14px 8px 44px;min-width:150px;clip-path:polygon(10px 0,100% 0,100% calc(100% - 10px),calc(100% - 10px) 100%,0 100%,0 10px);background:rgba(243,236,0,.86)}
+.p svg{position:absolute;left:10px;top:50%;width:24px;height:24px;transform:translateY(-50%);stroke:var(--r);fill:none;stroke-width:2}
+.p span{display:block;font:600 10px/1 var(--mono);letter-spacing:.14em;margin-bottom:5px}
+.p b{font:400 30px/1 'Anton';color:var(--r);letter-spacing:.02em}
+.p em{font:400 15px/1 'Anton';color:var(--r);font-style:normal;margin-left:4px}
+#shadow{position:absolute;left:0;top:0;border-radius:50%;background:radial-gradient(closest-side,rgba(0,0,0,.55),rgba(0,0,0,0));pointer-events:none;z-index:3;will-change:transform,opacity}
+#watch{position:absolute;left:0;top:0;z-index:6;transform-origin:50.3% 48.2%;touch-action:none;will-change:transform;outline:none}
+#watch img{display:block;width:100%;height:auto;pointer-events:none;filter:drop-shadow(0 2px 1px rgba(0,0,0,.35))}
+#watch:focus-visible{outline:3px dashed var(--r);outline-offset:8px}
+.lcd{position:absolute;left:var(--lx,47.5%);top:var(--ly,51.6%);width:var(--lw,25%);height:var(--lh,6.6%);display:flex;align-items:baseline;justify-content:center;gap:2px;font:600 13px/1 var(--mono);color:#cfd3c8;letter-spacing:.02em;text-shadow:0 0 6px rgba(207,211,200,.35);pointer-events:none}
+.lcd small{font-size:.72em}
+#stamp{position:absolute;left:0;top:0;z-index:7;font:400 26px/1 'Anton';letter-spacing:.08em;color:var(--r);border:3px solid var(--r);padding:6px 12px 4px;transform-origin:50% 50%;opacity:0;pointer-events:none;background:rgba(243,236,0,.6)}
+.hint{position:absolute;left:0;right:0;z-index:4;display:flex;flex-direction:column;align-items:center;gap:10px;pointer-events:none}
+.hint svg{width:30px;height:30px;stroke:var(--r);fill:none;stroke-width:2;animation:bob 1.4s ease-in-out infinite}
+.hint div{font:600 11px/1.5 var(--mono);letter-spacing:.16em;text-align:center;border:2px solid var(--r);padding:7px 14px;clip-path:polygon(8px 0,100% 0,100% calc(100% - 8px),calc(100% - 8px) 100%,0 100%,0 8px);background:rgba(243,236,0,.8)}
+@keyframes bob{50%{transform:translateY(-6px)}}
+#repair{position:absolute;right:16px;top:70px;z-index:8;font:600 11px/1 var(--mono);letter-spacing:.16em;background:var(--k);color:var(--y);border:0;padding:9px 12px;cursor:pointer;opacity:0;pointer-events:none;transition:opacity .3s}
+#repair.on{opacity:1;pointer-events:auto}
+#flash{position:absolute;inset:0;background:#fff;opacity:0;pointer-events:none;z-index:9;mix-blend-mode:screen}
+.legal{position:absolute;left:0;right:0;bottom:34px;text-align:center;font:500 10px/1.4 var(--mono);letter-spacing:.08em;z-index:4;pointer-events:none;padding:0 16px}
+@media (prefers-reduced-motion:reduce){.hint svg{animation:none}}
+
+/* ---------- scroll story ---------- */
+html.lenis,html.lenis body{height:auto}.lenis.lenis-smooth{scroll-behavior:auto!important}
+.sec{position:relative;height:100svh;overflow:hidden}
+.kick{font:600 11px/1 var(--mono);letter-spacing:.2em}
+.h2{font:400 clamp(58px,15.5vw,170px)/.86 'Anton';text-transform:uppercase;transform:skewX(-8deg);letter-spacing:.005em}
+.h2 .ch{display:inline-block;will-change:transform}
+#why{background:#0B0B0B;color:var(--y)}
+#why .head{position:absolute;left:20px;right:20px;top:9svh;z-index:3}
+#why .head .kick{color:var(--r);margin-bottom:12px}
+#why .rule{height:6px;background:var(--r);margin-top:12px;width:72%;transform:skewX(-8deg)}
+.stack{position:absolute;left:50%;top:60%;transform:translate(-50%,-50%);z-index:2}
+.stack img{position:absolute;display:block;will-change:transform,opacity}
+#whySvg{position:absolute;inset:0;z-index:3;pointer-events:none}
+#whySvg path{fill:none;stroke:var(--y);stroke-width:1.5}
+.lab{position:absolute;z-index:4;width:min(150px,34vw);border:2px solid var(--y);padding:7px 9px 6px;background:#0B0B0B;opacity:0;clip-path:polygon(8px 0,100% 0,100% calc(100% - 8px),calc(100% - 8px) 100%,0 100%,0 8px)}
+.lab b{display:block;font:400 17px/1 'Anton';color:var(--r);letter-spacing:.03em;margin-bottom:4px}
+.lab span{font:500 10px/1.35 var(--mono);color:var(--y);letter-spacing:.06em;text-transform:uppercase}
+#still{position:absolute;left:0;right:0;bottom:7svh;text-align:center;font:400 clamp(30px,8vw,64px)/1 'Anton';color:var(--y);opacity:0;z-index:4;transform:skewX(-8deg)}
+#whyFlash{position:absolute;inset:0;background:var(--y);opacity:0;pointer-events:none;z-index:5;mix-blend-mode:difference}
+.shk{animation:shk .38s cubic-bezier(.2,.8,.3,1)}
+@keyframes shk{0%{transform:translate(0,0)}15%{transform:translate(-10px,6px)}30%{transform:translate(9px,-7px)}45%{transform:translate(-6px,5px)}60%{transform:translate(4px,-3px)}80%{transform:translate(-2px,1px)}100%{transform:none}}
+#colour{color:var(--k)}
+.bgc{position:absolute;inset:0;will-change:clip-path}
+#colour .head{position:absolute;left:20px;right:20px;top:8svh;z-index:4;transition:color .35s}
+#colour .rule{height:6px;margin-top:12px;width:70%;transform:skewX(-8deg);transition:background .35s}
+.burst{position:absolute;left:50%;top:54%;width:min(120vw,820px);height:min(120vw,820px);transform:translate(-50%,-50%);z-index:2;opacity:.9}
+.flip{position:absolute;left:50%;top:54%;width:min(52vw,300px);z-index:3;transform:translate(-50%,-50%)}
+.flip img{position:absolute;left:0;top:0;width:100%;height:auto;opacity:0;filter:drop-shadow(0 18px 24px rgba(0,0,0,.35))}
+.flip img.base{position:relative}
+.tagline{position:absolute;left:0;right:0;bottom:19svh;text-align:center;z-index:4;font:400 clamp(26px,6.5vw,48px)/1 'Anton';transform:skewX(-8deg);transition:color .35s}
+.sw{position:absolute;left:0;right:0;bottom:7svh;display:flex;justify-content:center;gap:16px;z-index:5}
+.sw button{width:44px;height:44px;border-radius:50%;border:3px solid #0B0B0B;cursor:pointer;outline-offset:4px;transition:transform .25s,box-shadow .25s}
+.sw button.on{transform:scale(1.18);box-shadow:0 0 0 4px var(--y),0 0 0 7px #0B0B0B}
+#end{background:var(--y);min-height:100svh;height:auto;padding-bottom:40px}
+#end .h2{position:relative;z-index:3;padding:9svh 20px 0}
+#end .h2 span{display:block;will-change:transform}
+#end .h2 .u{height:7px;background:var(--r);width:84%;margin-top:10px}
+#endSvg{position:absolute;inset:0;z-index:1;pointer-events:none}
+#endSvg path{fill:none;stroke-linecap:round}
+#endWatch{position:relative;z-index:2;display:block;width:min(60vw,330px);margin:4svh auto 0;transform:rotate(-16deg);opacity:0;filter:drop-shadow(0 20px 18px rgba(0,0,0,.35))}
+#again{position:relative;z-index:3;display:block;margin:5svh auto 0;font:400 26px/1 'Anton';letter-spacing:.04em;padding:16px 34px 13px;background:var(--y);border:3px solid var(--k);color:var(--k);cursor:pointer;clip-path:polygon(14px 0,100% 0,100% calc(100% - 14px),calc(100% - 14px) 100%,0 100%,0 14px);transform:skewX(-8deg)}
+#again:hover{background:var(--k);color:var(--y)}
+#end .foot{position:relative;z-index:3;text-align:center;margin-top:4svh;font:500 10px/1.5 var(--mono);letter-spacing:.08em;padding:0 20px}
+@media (prefers-reduced-motion:reduce){.shk{animation:none}}
+</style>
+</head>
+<body>
+<main>
+<section id="hero" aria-label="Drop test">
+  <div id="tilt"><div id="stage">
+    <canvas id="surface" aria-hidden="true"></canvas>
+    <div class="tag">DROP TEST <span>//</span> <b id="n">001</b> <i></i></div>
+    <div class="panels" id="panels">
+      <div class="p"><svg viewBox="0 0 24 24"><path d="M12 3v18M7 7l5-4 5 4M7 17l5 4 5-4"/></svg><span>DROP HEIGHT</span><b id="h">0.0</b><em>m</em></div>
+      <div class="p"><svg viewBox="0 0 24 24"><path d="M2 12h5l2-6 4 12 2-6h7"/></svg><span>IMPACT (EST.)</span><b id="g">0</b><em>g</em></div>
+    </div>
+    <div id="shadow"></div>
+    <canvas id="fx" aria-hidden="true"></canvas>
+    <div id="watch" role="button" tabindex="0" aria-label="The watch. Press and hold to lift it, let go to drop it. Enter drops it."><img id="wimg" src="img/watch.webp" alt="" draggable="false"><div class="lcd"><span id="hh">10:58</span><small id="ss">36</small></div></div>
+    <div id="stamp">PASSED</div>
+    <div class="hint" id="hint"><svg viewBox="0 0 24 24"><path d="M12 20V6M7 10l5-5 5 5"/></svg><div>PRESS &amp; HOLD TO LIFT<br>LET GO TO DROP</div></div>
+    <div class="legal">Unofficial fan concept. Not affiliated with or endorsed by Casio. Images are AI-generated.</div>
+  </div></div>
+  <div id="dim"></div>
+  <header class="nav"><div class="brand">G-SHOCK</div><nav class="links" aria-hidden="true"><span>TEST LAB</span><span>TOUGHNESS</span><span>COLOURS</span></nav><button id="snd" aria-pressed="false">SOUND OFF</button></header>
+  <button id="repair">REPAIR ⟲</button>
+  <div id="flash"></div>
+</section>
+<section class="sec" id="why" aria-label="Why it survives">
+  <div class="head"><div class="kick">02 // TOUGHNESS</div><h2 class="h2 split">Why it survives</h2><div class="rule"></div></div>
+  <div class="stack" id="stack"></div>
+  <svg id="whySvg"></svg>
+  <div id="labs"></div>
+  <div id="still">AND IT STILL TICKS.</div>
+  <div id="whyFlash"></div>
+</section>
+<section class="sec" id="colour" aria-label="Pick your colour">
+  <div class="bgc" style="background:#0B0B0B"></div><div class="bgc" style="background:#F2F1EC"></div><div class="bgc" style="background:#E8202A"></div><div class="bgc" style="background:#F3EC00"></div>
+  <svg class="burst" viewBox="-100 -100 200 200" aria-hidden="true"><path id="burstP" fill="#F3EC00"/></svg>
+  <div class="head"><div class="kick">03 // COLOURS</div><h2 class="h2 split">Pick your colour</h2><div class="rule"></div></div>
+  <div class="flip" id="flip"><img class="base" src="img/watch.webp" alt="Black version"><img src="img/watch-white.webp" alt="White version"><img src="img/watch-red.webp" alt="Red version"><img src="img/watch-yellow.webp" alt="Yellow version"></div>
+  <div class="tagline" id="tagline">STEALTH MODE.</div>
+  <div class="sw" id="sw"><button style="background:#0B0B0B" aria-label="Black"></button><button style="background:#F2F1EC" aria-label="White"></button><button style="background:#E8202A" aria-label="Red"></button><button style="background:#F3EC00" aria-label="Yellow"></button></div>
+</section>
+<section class="sec" id="end" aria-label="Drop it again">
+  <svg id="endSvg"></svg>
+  <h2 class="h2"><span>Drop it.</span><span>It's fine.</span><span class="u"></span></h2>
+  <img id="endWatch" src="img/watch.webp" alt="">
+  <button id="again">DROP IT AGAIN »</button>
+  <p class="foot">Unofficial fan concept by Web Atelier. Not affiliated with or endorsed by Casio Computer Co., Ltd.<br>Product images are AI-generated illustrations. No products are sold here.</p>
+</section>
+</main>
+<script>
+(() => {
+const $ = s => document.querySelector(s);
+const hero = $('#hero'), stage = $('#stage'), surf = $('#surface'), fx = $('#fx'), W_ = $('#watch'), SH = $('#shadow'), stamp = $('#stamp');
+const sctx = surf.getContext('2d'), fctx = fx.getContext('2d');
+const RM = matchMedia('(prefers-reduced-motion: reduce)').matches, COARSE = matchMedia('(pointer: coarse)').matches;
+const cl = (x, a = 0, b = 1) => Math.max(a, Math.min(b, x)), eo = x => 1 - Math.pow(1 - x, 3), lerp = (a, b, k) => a + (b - a) * k;
+const rnd = (a, b) => a + Math.random() * (b - a);
+let W = 0, H = 0, DPR = 1, clean = null, L = {};
+
+// ---------------- layout + the page surface (drawn on canvas so it can break) ----------------
+function layout() {
+  const r = hero.getBoundingClientRect(); W = r.width; H = r.height; DPR = Math.min(COARSE ? 1.5 : 2, devicePixelRatio || 1);
+  for (const c of [surf, fx]) { c.width = Math.round(W * DPR); c.height = Math.round(H * DPR); }
+  sctx.setTransform(DPR, 0, 0, DPR, 0, 0); fctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+  const fs = Math.min(W * 0.3, H * 0.2, 250);
+  L.fs = fs; L.headTop = 98; L.subY = L.headTop + fs * 1.02 + 14;
+  L.panelsTop = L.subY + 30; $('#panels').style.top = L.panelsTop + 'px';
+  L.hintTop = H - 150; $('#hint').style.top = L.hintTop + 'px';
+  const free = L.hintTop - (L.panelsTop + 70);
+  L.ww = Math.min(W * 0.46, W > 900 ? 330 : 270, free * 0.52);           // watch width at rest
+  W_.style.width = L.ww + 'px';
+  L.restX = W / 2; L.restY = L.panelsTop + 70 + free / 2;
+  clean = document.createElement('canvas'); clean.width = surf.width; clean.height = surf.height;
+  const c = clean.getContext('2d'); c.setTransform(DPR, 0, 0, DPR, 0, 0); paintSurface(c);
+  sctx.setTransform(1, 0, 0, 1, 0, 0); sctx.drawImage(clean, 0, 0); sctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+  if (!wt.init) { wt.x = L.restX; wt.y = L.restY; }
+}
+function paintSurface(c) {
+  c.fillStyle = '#F3EC00'; c.fillRect(0, 0, W, H);
+  // grit so shards read as a real material
+  let s = 7; const R = () => (s = (s * 16807) % 2147483647) / 2147483647;
+  for (let i = 0; i < W * H / 260; i++) { c.fillStyle = R() < .5 ? 'rgba(0,0,0,.07)' : 'rgba(255,255,255,.18)'; const z = R() * 1.6 + .4; c.fillRect(R() * W, R() * H, z, z); }
+  // headline
+  c.save(); c.fillStyle = '#0B0B0B'; c.font = `400 ${L.fs}px Anton`; c.textBaseline = 'top'; c.textAlign = 'center';
+  const tw = c.measureText('TOUGH.').width, sc = Math.min(1, (W * 0.92) / tw);
+  c.translate(W / 2, L.headTop); c.transform(1, 0, -0.14, 1, 0, 0); c.scale(sc * 1.04, 1); c.fillText('TOUGH.', 0, 0); c.restore();
+  c.fillStyle = '#0B0B0B'; c.font = `400 ${Math.max(13, Math.min(17, W / 26))}px 'Archivo Black'`; c.textAlign = 'center'; c.textBaseline = 'top';
+  c.fillText('A shock-resistant watch built to take the fall.', W / 2, L.subY);
+  // corner brackets around the drop zone
+  c.strokeStyle = '#E8202A'; c.lineWidth = 2.5; const bx = L.restX, by = L.restY, bw = Math.min(W * .42, L.ww * 1.15), bh = L.ww * .95, k = 22;
+  for (const [sx, sy] of [[-1, -1], [1, -1], [-1, 1], [1, 1]]) { c.beginPath(); c.moveTo(bx + sx * bw, by + sy * bh - sy * k); c.lineTo(bx + sx * bw, by + sy * bh); c.lineTo(bx + sx * bw - sx * k, by + sy * bh); c.stroke(); }
+  // hazard stripes
+  c.save(); c.beginPath(); c.rect(0, H - 26, W, 26); c.clip(); c.fillStyle = '#0B0B0B'; c.fillRect(0, H - 26, W, 26); c.fillStyle = '#E8202A';
+  for (let x = -40; x < W + 40; x += 34) { c.beginPath(); c.moveTo(x, H); c.lineTo(x + 17, H); c.lineTo(x + 33, H - 26); c.lineTo(x + 16, H - 26); c.fill(); } c.restore();
+}
+
+// ---------------- the break: radial + concentric cracks like real glass ----------------
+const shards = [], parts = [], waves = [], cracks = []; let crackT0 = 0;
+function shatter(cx, cy, k) {
+  const base = Math.min(L.ww, W * .34) * (0.7 + 0.35 * k), n = 9 + Math.round(5 * k), step = Math.PI * 2 / n, a0 = Math.random() * 6.28;
+  const ang = Array.from({ length: n }, (_, j) => a0 + j * step + rnd(-.28, .28) * step);
+  const R = [0, base * .55, base * 1.0, base * 1.55];
+  const V = R.map((r, i) => ang.map(a => i === 0 ? [cx, cy] : [cx + Math.cos(a + rnd(-.08, .08)) * r * rnd(.85, 1.15), cy + Math.sin(a + rnd(-.08, .08)) * r * rnd(.85, 1.15)]));
+  const mid = (p, q, amt) => { const mx = (p[0] + q[0]) / 2, my = (p[1] + q[1]) / 2, dx = q[0] - p[0], dy = q[1] - p[1], l = Math.hypot(dx, dy) || 1, o = rnd(-amt, amt) * l; return [mx - dy / l * o, my + dx / l * o]; };
+  const ringMid = V.map((row, i) => row.map((p, j) => i ? mid(p, row[(j + 1) % n], .14) : null));
+  const rayMid = V.slice(0, 3).map((row, i) => row.map((p, j) => mid(p, V[i + 1][j], .07)));
+  const segs = []; const addSeg = (p, q, w) => segs.push({ p, q, w, d: Math.min(Math.hypot(p[0] - cx, p[1] - cy), Math.hypot(q[0] - cx, q[1] - cy)) });
+  for (let i = 0; i < 3; i++) for (let j = 0; j < n; j++) { addSeg(V[i][j], rayMid[i][j], 2.6 - i * .5); addSeg(rayMid[i][j], V[i + 1][j], 2.6 - i * .5); }
+  for (let i = 1; i < 4; i++) for (let j = 0; j < n; j++) { addSeg(V[i][j], ringMid[i][j], 2 - i * .3); addSeg(ringMid[i][j], V[i][(j + 1) % n], 2 - i * .3); }
+  // long runners past the last ring
+  for (let j = 0; j < n; j++) { if (Math.random() > .55 + .35 * k) continue; let p = V[3][j], a = ang[j], w = 1.6; const len = base * rnd(.6, 1.6) * (0.6 + k);
+    for (let s = 0; s < 6; s++) { a += rnd(-.22, .22); const q = [p[0] + Math.cos(a) * len / 6, p[1] + Math.sin(a) * len / 6]; addSeg(p, q, w); p = q; w *= .78; } }
+  cracks.push({ segs, t0: now, cx, cy });
+  // cells: inner ring mostly flies out, middle ring partly, outer ring only cracks
+  for (let i = 0; i < 3; i++) for (let j = 0; j < n; j++) {
+    const j2 = (j + 1) % n;
+    const poly = i === 0 ? [V[0][j], rayMid[0][j], V[1][j], ringMid[1][j], V[1][j2], rayMid[0][j2]]
+      : [V[i][j], rayMid[i][j], V[i + 1][j], ringMid[i + 1][j], V[i + 1][j2], rayMid[i][j2], V[i][j2], ringMid[i][j]];
+    const fly = i === 0 ? Math.random() < .92 : i === 1 ? Math.random() < .3 + .45 * k : false;
+    if (fly) launch(poly, cx, cy, k, i); else shade(poly);
+  }
+  // holes glow red-hot at the core
+  const g = sctx.createRadialGradient(cx, cy, 0, cx, cy, R[2]); g.addColorStop(0, 'rgba(232,32,42,.55)'); g.addColorStop(1, 'rgba(232,32,42,0)');
+  holes.forEach(p => { path(sctx, p); sctx.fillStyle = '#0B0B0B'; sctx.fill(); sctx.fillStyle = g; sctx.fill(); sctx.lineWidth = 2; sctx.strokeStyle = 'rgba(232,32,42,.9)'; sctx.stroke(); });
+  holes.length = 0;
+  // debris + dust + shockwave
+  const nd = RM ? 10 : Math.round(16 + 36 * k);
+  for (let i = 0; i < nd; i++) { const a = rnd(0, 6.28), v = rnd(200, 900) * (0.5 + k); parts.push({ x: cx + Math.cos(a) * 20, y: cy + Math.sin(a) * 20, vx: Math.cos(a) * v, vy: Math.sin(a) * v - rnd(100, 500) * k, r: rnd(0, 6), vr: rnd(-12, 12), s: rnd(2, 7), c: Math.random() < .6 ? '#0B0B0B' : (Math.random() < .5 ? '#F3EC00' : '#E8202A'), t: 0, life: rnd(.6, 1.1), dust: false }); }
+  for (let i = 0; i < 9; i++) { const a = rnd(0, 6.28); parts.push({ x: cx + Math.cos(a) * L.ww * .4, y: cy + Math.sin(a) * L.ww * .4, vx: Math.cos(a) * rnd(40, 140), vy: Math.sin(a) * rnd(40, 140) - 30, s: rnd(30, 70) * (0.6 + k), t: 0, life: rnd(.7, 1.2), dust: true }); }
+  waves.push({ x: cx, y: cy, t: 0, r: R[3] * 1.5, k });
+}
+const holes = [];
+function path(c, p) { c.beginPath(); c.moveTo(p[0][0], p[0][1]); for (let i = 1; i < p.length; i++) c.lineTo(p[i][0], p[i][1]); c.closePath(); }
+function shade(p) { path(sctx, p); sctx.fillStyle = `rgba(0,0,0,${rnd(.02, .11).toFixed(3)})`; sctx.fill(); }
+function launch(p, cx, cy, k, ring) {
+  let x0 = 1e9, y0 = 1e9, x1 = -1e9, y1 = -1e9, gx = 0, gy = 0;
+  p.forEach(([x, y]) => { x0 = Math.min(x0, x); y0 = Math.min(y0, y); x1 = Math.max(x1, x); y1 = Math.max(y1, y); gx += x; gy += y; }); gx /= p.length; gy /= p.length;
+  x0 = Math.floor(x0) - 2; y0 = Math.floor(y0) - 2; const w = Math.ceil(x1 - x0) + 4, h = Math.ceil(y1 - y0) + 4; if (w < 3 || h < 3) return;
+  const sp = document.createElement('canvas'); sp.width = Math.ceil(w * DPR); sp.height = Math.ceil(h * DPR); const c = sp.getContext('2d');
+  c.setTransform(DPR, 0, 0, DPR, -x0 * DPR, -y0 * DPR); path(c, p); c.save(); c.clip(); c.setTransform(1, 0, 0, 1, 0, 0);
+  c.drawImage(surf, x0 * DPR, y0 * DPR, w * DPR, h * DPR, 0, 0, w * DPR, h * DPR); c.restore();
+  c.setTransform(DPR, 0, 0, DPR, -x0 * DPR, -y0 * DPR); path(c, p); c.lineWidth = 1.2; c.strokeStyle = 'rgba(0,0,0,.55)'; c.stroke();
+  holes.push(p);
+  let dx = gx - cx, dy = gy - cy; const l = Math.hypot(dx, dy) || 1; dx /= l; dy /= l;
+  const v = rnd(260, 720) * (0.45 + k) * (ring ? .7 : 1);
+  shards.push({ sp, w, h, ox: gx - x0, oy: gy - y0, x: gx, y: gy, vx: dx * v + rnd(-60, 60), vy: dy * v - rnd(120, 420) * k, r: 0, vr: rnd(-7, 7), f: 0, vf: rnd(-9, 9), t: 0, z: rnd(.15, .45) });
+}
+
+// ---------------- the watch ----------------
+const wt = { init: false, x: 0, y: 0, tx: 0, ty: 0, vx: 0, vy: 0, lift: 0, state: 'idle', held: false, fall: null, squash: 0, sqv: 0, drops: 0, lastH: 0 };
+function setLift(target, dt, rate) { wt.lift += (target - wt.lift) * cl(dt * rate); }
+function hudHeight(m) { $('#h').textContent = m.toFixed(1); }
+let gShown = 0, gTarget = 0;
+function impact() {
+  const k = wt.fall.k, hm = wt.fall.h; wt.state = 'rest'; wt.fall = null; wt.lift = 0; wt.drops++;
+  $('#n').textContent = String(wt.drops).padStart(3, '0');
+  const v = Math.sqrt(2 * 9.81 * Math.max(.05, hm)); gTarget = Math.round(v / (9.81 * .0025) / 5) * 5;  // ~2.5 ms stop: a rough, labelled estimate
+  wt.sqv = -9 * (0.5 + k);
+  shatter(wt.x, wt.y + L.ww * .05, k);
+  shake.t = 0; shake.a = RM ? 0 : 16 * (0.4 + k); if (!RM) { slow.t = 0; slow.k = k; }
+  if (k > .45 && !RM) { const f = $('#flash'); f.style.transition = 'none'; f.style.opacity = .32 * k; requestAnimationFrame(() => { f.style.transition = 'opacity .16s'; f.style.opacity = 0; }); }
+  sfx.impact(k); navigator.vibrate && navigator.vibrate(Math.round(25 + 45 * k));
+  stampAt = now + .22; lcdOK = now + .7;
+  if (wt.intro) { wt.intro = false; setTimeout(() => { wt.tx = L.restX; wt.ty = L.restY; wt.state = 'jump'; wt.jump = { t: 0, x0: wt.x, y0: wt.y, peak: .32, dur: .5 }; hideStamp(); }, 900); }
+  if (wt.drops >= 1) setTimeout(() => $('#repair').classList.add('on'), 900);
+}
+function drop(fromLift, heightM) { wt.state = 'falling'; wt.fall = { L0: Math.max(.08, fromLift), t: 0, T: .16 + .32 * Math.sqrt(Math.max(.08, fromLift)), k: cl(fromLift), h: heightM }; }
+// pointer: hold the watch to lift it, drag to aim, let go to drop. Tap anywhere else: the watch jumps there and drops.
+let pid = null;
+W_.addEventListener('pointerdown', e => { if (wt.state === 'falling') return; sfx.wake(); pid = e.pointerId; W_.setPointerCapture(pid); wt.held = true; wt.state = 'held'; wt.tx = e.clientX - hero.getBoundingClientRect().left; wt.ty = e.clientY - hero.getBoundingClientRect().top; hideStamp(); e.preventDefault(); });
+W_.addEventListener('pointermove', e => { if (!wt.held || e.pointerId !== pid) return; const r = hero.getBoundingClientRect(); wt.tx = e.clientX - r.left; wt.ty = e.clientY - r.top; });
+const up = e => { if (!wt.held || e.pointerId !== pid) return; wt.held = false; pid = null; drop(wt.lift, wt.lastH); };
+W_.addEventListener('pointerup', up); W_.addEventListener('pointercancel', up);
+hero.addEventListener('click', e => {
+  if (e.target.closest('#watch,#repair,#snd') || wt.state !== 'rest' || window.__scrolling) return; sfx.wake();
+  const r = hero.getBoundingClientRect(); wt.tx = cl(e.clientX - r.left, L.ww * .4, W - L.ww * .4); wt.ty = cl(e.clientY - r.top, 140, H - 120);
+  wt.state = 'jump'; wt.jump = { t: 0, x0: wt.x, y0: wt.y, peak: .5, dur: .38 }; hideStamp();
+});
+W_.addEventListener('keydown', e => { if ((e.key === 'Enter' || e.key === ' ') && wt.state === 'rest') { e.preventDefault(); sfx.wake(); wt.lift = .7; wt.lastH = 1.4; drop(.7, 1.4); } });
+$('#repair').addEventListener('click', () => { if (repair) return; repair = { t: 0 }; $('#repair').classList.remove('on'); sfx.wake(); sfx.scan(); });
+$('#snd').addEventListener('click', () => { sfx.on = !sfx.on; sfx.wake(); $('#snd').textContent = sfx.on ? 'SOUND ON' : 'SOUND OFF'; $('#snd').setAttribute('aria-pressed', sfx.on); });
+
+// stamp + live LCD
+let stampAt = 0, lcdOK = 0;
+function hideStamp() { stamp.style.opacity = 0; stampAt = 0; }
+function lcd() { const d = new Date(); if (now < lcdOK) { $('#hh').textContent = 'OK!'; $('#ss').textContent = ''; return; } $('#hh').textContent = d.getHours().toString().padStart(2, '0') + ':' + d.getMinutes().toString().padStart(2, '0'); $('#ss').textContent = d.getSeconds().toString().padStart(2, '0'); }
+
+// repair: a lab scanner resurfaces the page from the top
+let repair = null;
+
+// ---------------- sound (WebAudio, synthesized, off until the visitor turns it on) ----------------
+const sfx = { ac: null, on: false,
+  wake() { if (!this.ac) try { this.ac = new (window.AudioContext || window.webkitAudioContext)(); } catch (e) {} if (this.ac && this.ac.state === 'suspended') this.ac.resume(); },
+  noise(d) { const b = this.ac.createBuffer(1, this.ac.sampleRate * d, this.ac.sampleRate), a = b.getChannelData(0); for (let i = 0; i < a.length; i++) a[i] = Math.random() * 2 - 1; const s = this.ac.createBufferSource(); s.buffer = b; return s; },
+  impact(k) { if (!this.on || !this.ac) return; const t = this.ac.currentTime, ac = this.ac;
+    const o = ac.createOscillator(), g = ac.createGain(); o.frequency.setValueAtTime(120, t); o.frequency.exponentialRampToValueAtTime(38, t + .25); g.gain.setValueAtTime(.9 * (0.4 + k), t); g.gain.exponentialRampToValueAtTime(.001, t + .35); o.connect(g).connect(ac.destination); o.start(t); o.stop(t + .4);
+    const n = this.noise(.4), f = ac.createBiquadFilter(), g2 = ac.createGain(); f.type = 'highpass'; f.frequency.value = 1600; g2.gain.setValueAtTime(.5 * (0.3 + k), t); g2.gain.exponentialRampToValueAtTime(.001, t + .22); n.connect(f).connect(g2).connect(ac.destination); n.start(t);
+    for (let i = 0; i < 7; i++) { const p = ac.createOscillator(), pg = ac.createGain(), tt = t + .05 + Math.random() * .5; p.frequency.value = 2400 + Math.random() * 4200; pg.gain.setValueAtTime(.05, tt); pg.gain.exponentialRampToValueAtTime(.0005, tt + .09); p.connect(pg).connect(ac.destination); p.start(tt); p.stop(tt + .1); } },
+  tick() { if (!this.on || !this.ac) return; const t = this.ac.currentTime, o = this.ac.createOscillator(), g = this.ac.createGain(); o.frequency.value = 1800; g.gain.setValueAtTime(.04, t); g.gain.exponentialRampToValueAtTime(.0005, t + .03); o.connect(g).connect(this.ac.destination); o.start(t); o.stop(t + .04); },
+  scan() { if (!this.on || !this.ac) return; const t = this.ac.currentTime, o = this.ac.createOscillator(), g = this.ac.createGain(); o.type = 'sawtooth'; o.frequency.setValueAtTime(140, t); o.frequency.linearRampToValueAtTime(420, t + .9); g.gain.setValueAtTime(.05, t); g.gain.linearRampToValueAtTime(0, t + .95); o.connect(g).connect(this.ac.destination); o.start(t); o.stop(t + 1); } };
+
+// ---------------- frame loop ----------------
+const shake = { t: 9, a: 0 }, slow = { t: 9, k: 0 }; let now = 0, last = performance.now() / 1000;
+function frame(ms) {
+  const tNow = ms / 1000, rdt = Math.min(.033, tNow - last); last = tNow; slow.t += rdt;
+  const ts = slow.t < .12 ? .18 : slow.t < .42 ? lerp(.18, 1, eo((slow.t - .12) / .3)) : 1; const dt = rdt * (slow.k > .6 ? ts : 1); now += dt;
+  // watch state
+  if (wt.state === 'held') { setLift(1, dt, 1.9); const hm = wt.lift * 2.0; if (Math.floor(hm * 10) !== Math.floor(wt.lastH * 10)) sfx.tick(); wt.lastH = hm; hudHeight(hm); }
+  if (wt.state === 'jump') { const j = wt.jump, pk = j.peak || .5, du = j.dur || .38; j.t += dt; const u = cl(j.t / du); wt.lift = Math.sin(u * Math.PI / 2) * pk; wt.lastH = pk * 2; hudHeight(wt.lift * 2); if (u >= 1) drop(pk, pk * 2); }
+  if (wt.state === 'falling') { const f = wt.fall; f.t += dt; const u = cl(f.t / f.T); wt.lift = f.L0 * (1 - u * u); hudHeight(Math.max(0, wt.lift * 2)); if (u >= 1) impact(); }
+  const k = wt.state === 'jump' ? eo(cl(wt.jump.t / (wt.jump.dur || .38))) : 1;
+  const px = wt.x, py = wt.y;
+  if (wt.state === 'jump') { wt.x = lerp(wt.jump.x0, wt.tx, k); wt.y = lerp(wt.jump.y0, wt.ty, k); }
+  else if (wt.state === 'held') { wt.x += (wt.tx - wt.x) * cl(dt * 14); wt.y += (wt.ty - wt.y) * cl(dt * 14); }
+  wt.vx = lerp(wt.vx, (wt.x - px) / dt, .25); wt.vy = lerp(wt.vy, (wt.y - py) / dt, .25);
+  // squash spring after impact
+  wt.sqv += (-wt.squash * 320 - wt.sqv * 16) * dt; wt.squash += wt.sqv * dt;
+  gShown += (gTarget - gShown) * cl(dt * 9); $('#g').textContent = Math.round(gShown);
+  const s = 1 + .6 * wt.lift, sq = wt.squash * .06;
+  const tiltX = cl(-wt.vy * .02, -18, 18), tiltY = cl(wt.vx * .02, -18, 18);
+  W_.style.transform = `translate3d(${wt.x - L.ww * .503}px,${wt.y - L.ww * .826}px,0) perspective(900px) rotateX(${tiltX}deg) rotateY(${tiltY}deg) scale(${s * (1 - sq)},${s * (1 + sq)})`;
+  const sw = L.ww * (1.1 + .9 * wt.lift);
+  SH.style.width = sw + 'px'; SH.style.height = sw * .9 + 'px';
+  SH.style.transform = `translate3d(${wt.x - sw / 2 + wt.lift * 50}px,${wt.y - sw * .45 + wt.lift * 90}px,0)`; SH.style.opacity = (.75 - .5 * wt.lift).toFixed(3);
+  SH.style.filter = `blur(${(6 + 26 * wt.lift).toFixed(1)}px)`;
+  // stamp
+  if (stampAt && now >= stampAt) { const u = cl((now - stampAt) / .14); stamp.style.opacity = u; stamp.style.transform = `translate3d(${wt.x + L.ww * .42}px,${wt.y - L.ww * .42}px,0) rotate(-9deg) scale(${lerp(2.2, 1, eo(u))})`; if (u >= 1) stampAt = 0; }
+  // shake
+  shake.t += dt; const sa = shake.a * Math.max(0, 1 - shake.t / .38); const zp = 1 + .045 * slow.k * Math.max(0, 1 - slow.t / .5); stage.style.transform = (sa > .1 || zp > 1.001) ? `translate3d(${Math.sin(shake.t * 90) * sa}px,${Math.cos(shake.t * 77) * sa}px,0) scale(${zp})` : '';
+  // repair scan
+  if (repair) { repair.t += dt; const u = cl(repair.t / .9), y = H * eo(u);
+    sctx.save(); sctx.beginPath(); sctx.rect(0, 0, W, y); sctx.clip(); sctx.setTransform(1, 0, 0, 1, 0, 0); sctx.drawImage(clean, 0, 0); sctx.restore(); sctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+    repair.y = y; if (u >= 1) { repair = null; gTarget = 0; hudHeight(0); } }
+  lcd(); drawFx(dt);
+  requestAnimationFrame(frame);
+}
+function drawFx(dt) {
+  const c = fctx; c.clearRect(0, 0, W, H);
+  // cracks run out from the impact, then bake into the surface
+  for (let i = cracks.length - 1; i >= 0; i--) { const cr = cracks[i], reach = (now - cr.t0) * 2600; let done = true;
+    for (const s of cr.segs) { if (s.d > reach) { done = false; continue; } if (s.baked) continue;
+      const tgt = s.d + 60 < reach ? sctx : c; if (tgt === sctx) s.baked = true;
+      tgt.lineCap = 'round'; tgt.beginPath(); tgt.moveTo(s.p[0], s.p[1]); tgt.lineTo(s.q[0], s.q[1]);
+      tgt.strokeStyle = 'rgba(232,32,42,.85)'; tgt.lineWidth = s.w + 2.2; tgt.stroke(); tgt.strokeStyle = '#0B0B0B'; tgt.lineWidth = Math.max(.8, s.w * .75); tgt.stroke(); }
+    if (done && cr.segs.every(s => s.baked)) cracks.splice(i, 1); }
+  // shockwave
+  for (let i = waves.length - 1; i >= 0; i--) { const w = waves[i]; w.t += dt; const u = cl(w.t / .38); if (u >= 1) { waves.splice(i, 1); continue; }
+    c.beginPath(); c.arc(w.x, w.y, w.r * eo(u), 0, 6.283); c.lineWidth = 12 * (1 - u) * (0.5 + w.k); c.strokeStyle = `rgba(11,11,11,${(.55 * (1 - u)).toFixed(3)})`; c.stroke(); }
+  // flying shards (come toward you a little, then fall)
+  for (let i = shards.length - 1; i >= 0; i--) { const s = shards[i]; s.t += dt; s.vy += 2300 * dt; s.x += s.vx * dt; s.y += s.vy * dt; s.r += s.vr * dt; s.f += s.vf * dt;
+    if (s.y > H + 300 || s.t > 3) { shards.splice(i, 1); continue; }
+    const sc = 1 + s.z * Math.min(1, s.t * 3);
+    c.save(); c.translate(s.x, s.y); c.rotate(s.r); const fl = Math.cos(s.f); c.scale(sc * (Math.abs(fl) < .12 ? .12 * Math.sign(fl || 1) : fl), sc); if (!COARSE) { c.shadowColor = 'rgba(0,0,0,.35)'; c.shadowBlur = 10; c.shadowOffsetY = 8 * sc; }
+    c.drawImage(s.sp, -s.ox, -s.oy, s.w, s.h); c.restore(); }
+  for (let i = parts.length - 1; i >= 0; i--) { const p = parts[i]; p.t += dt; if (p.t > p.life) { parts.splice(i, 1); continue; } const u = p.t / p.life;
+    if (p.dust) { p.x += p.vx * dt; p.y += p.vy * dt; const r = p.s * (0.6 + u); const g = c.createRadialGradient(p.x, p.y, 0, p.x, p.y, r); g.addColorStop(0, `rgba(60,55,40,${(.22 * (1 - u)).toFixed(3)})`); g.addColorStop(1, 'rgba(60,55,40,0)'); c.fillStyle = g; c.fillRect(p.x - r, p.y - r, r * 2, r * 2); continue; }
+    p.vy += 2000 * dt; p.x += p.vx * dt; p.y += p.vy * dt; p.r += p.vr * dt; c.save(); c.translate(p.x, p.y); c.rotate(p.r); c.globalAlpha = 1 - u * u; c.fillStyle = p.c;
+    c.beginPath(); c.moveTo(-p.s, -p.s * .6); c.lineTo(p.s, -p.s * .2); c.lineTo(-p.s * .2, p.s); c.closePath(); c.fill(); c.restore(); }
+  if (repair) { c.fillStyle = '#FF5A00'; c.shadowColor = '#FF5A00'; c.shadowBlur = 18; c.fillRect(0, repair.y - 3, W, 6); c.shadowBlur = 0;
+    c.font = "600 11px 'IBM Plex Mono'"; c.fillStyle = '#0B0B0B'; c.textAlign = 'left'; c.fillText('RESURFACING…', 16, repair.y - 10); }
+}
+
+window.heroAPI = { bigDrop() { if (wt.state !== 'rest') return; hideStamp(); wt.tx = L.restX; wt.ty = L.restY; wt.state = 'jump'; wt.jump = { t: 0, x0: wt.x, y0: wt.y, peak: 1, dur: .55 }; }, wake: () => sfx.wake(), sfx };
+// ---------------- start: the first drop plays by itself (frame 0 already in motion) ----------------
+Promise.all([document.fonts.load("400 100px Anton"), document.fonts.load("400 20px 'Archivo Black'"), document.fonts.load("600 12px 'IBM Plex Mono'"), $('#wimg').decode().catch(() => {})]).then(() => {
+  layout(); wt.init = true; addEventListener('resize', () => { const x = wt.x / W, y = wt.y / H; layout(); wt.x = x * W; wt.y = y * H; });
+  wt.x = W / 2; wt.y = L.headTop + L.fs * .55; wt.intro = true; wt.lift = 1; wt.lastH = 2.0; hudHeight(2.0); drop(1, 2.0); wt.fall.t = .06;
+  requestAnimationFrame(t => { last = t / 1000; requestAnimationFrame(frame); });
+});
+})();
+</script>
+<script src="img/layers.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script src="https://unpkg.com/lenis@1.1.13/dist/lenis.min.js"></script>
+<script src="story.js"></script>
+</body>
+</html>
