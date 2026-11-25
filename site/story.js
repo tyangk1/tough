@@ -16,10 +16,31 @@
   const end1 = tl => tl.to({}, { duration: 0 }, 1);   // every pinned timeline runs 0..1
   const impact = (el, k) => { if (RM) return; el.classList.remove('shk'); void el.offsetWidth; el.classList.add('shk'); window.heroAPI && heroAPI.sfx.impact(k); navigator.vibrate && navigator.vibrate(30); };
 
-  // ---------- 1. the broken hero falls away (tips back into the dark) ----------
-  gsap.timeline({ scrollTrigger: { trigger: '#hero', start: 'top top', end: '+=60%', scrub: true, pin: true } })
-    .to('#tilt', { rotateX: 62, yPercent: 10, scale: .8, transformPerspective: 1100, ease: 'power2.in', duration: 1 }, 0)
-    .to('#dim', { opacity: .72, ease: 'power2.in', duration: 1 }, 0);
+  // ---------- 1. hero: scroll lifts the watch, slams it into the page, then the page tips back ----------
+  const HW = { lift: 0, drop: 0, after: 0, tip: 0 };
+  function renderHero() {
+    const L = window.heroL; if (!L) return;
+    const z = HW.lift * (1 - HW.drop);                       // height above the page, 0..1
+    const s = 1 + .3 * z, y = -innerHeight * .07 * z, r = -7 * z;
+    $('#watch').style.transform = `translate3d(${L.cx - L.ww * .503}px,${L.cy - L.ww * .826 + y}px,0) rotate(${r}deg) scale(${s})`;
+    $('#watch').style.transformOrigin = '50.3% 48.2%';
+    const sw = L.ww * (1.05 + .9 * z), sh = $('#shadow');
+    sh.style.width = sw + 'px'; sh.style.height = sw * .8 + 'px';
+    sh.style.transform = `translate3d(${L.cx - sw / 2 + z * 46}px,${L.cy - sw * .4 + z * 90}px,0)`; sh.style.opacity = (.85 - .55 * z).toFixed(3); sh.style.filter = `blur(${(8 + 30 * z).toFixed(1)}px)`;
+    window.__heroCalm = 1 - HW.tip;
+    if (HW.drop > .995 && HW.lift > .5) heroAPI.impact(); else if (HW.drop < .9) heroAPI.heal();
+    const af = $('#after'); af.style.top = (L.cy + L.ww * .887 + 16) + 'px'; af.style.opacity = HW.after; af.querySelector('div span').style.transform = `skewX(-9deg) translateY(${(1 - HW.after) * 100}%)`;
+    $('#cue').style.opacity = cl(1 - HW.lift * 3);
+    $('#tilt').style.transform = HW.tip > 0 ? `perspective(1100px) rotateX(${62 * HW.tip}deg) translateY(${10 * HW.tip}%) scale(${1 - .2 * HW.tip})` : '';
+    $('#dim').style.opacity = .72 * HW.tip;
+  }
+  const heroTL = gsap.timeline({ scrollTrigger: { trigger: '#hero', start: 'top top', end: '+=170%', scrub: .5, pin: true, onRefresh: () => renderHero() } });
+  heroTL.to(HW, { lift: 1, duration: .22, ease: 'power2.out' }, .03)
+    .to(HW, { drop: 1, duration: .1, ease: 'power3.in' }, .3)
+    .to(HW, { after: 1, duration: .12, ease: 'power2.out' }, .46)
+    .to(HW, { tip: 1, duration: .28, ease: 'power2.in' }, .72);
+  end1(heroTL); heroTL.eventCallback('onUpdate', renderHero);
+  addEventListener('hero-ready', renderHero); renderHero();
 
   // ---------- 2. why it survives: exploded view on a scrubbed timeline ----------
   const LY = window.LAYERS, stack = $('#stack'), labs = $('#labs'), svg = $('#whySvg');
@@ -114,7 +135,7 @@
     .fromTo('#endWatch', { y: () => -innerHeight * .9, scale: 1.7, opacity: 1, rotate: -40 }, { y: 0, scale: 1, rotate: -16, opacity: 1, duration: .42, ease: 'power3.in' }, .2)
     .add(() => { impact($('#end'), .8); gsap.to(crackPaths, { strokeDashoffset: 0, duration: .4, ease: 'power2.out', stagger: .006 }); }, '>');
   ScrollTrigger.create({ trigger: '#end', start: 'top 45%', onEnter: () => { buildCracks(); endTL.restart(); }, onLeaveBack: () => { endTL.pause(0); gsap.set(crackPaths, { strokeDashoffset: (i, el) => el.getTotalLength() }); } });
-  $('#again').addEventListener('click', () => { window.heroAPI && heroAPI.wake(); lenis.scrollTo(0, { duration: 1.8, easing: t => 1 - Math.pow(1 - t, 4), onComplete: () => setTimeout(() => heroAPI.bigDrop(), 150) }); });
+  $('#again').addEventListener('click', () => { window.heroAPI && heroAPI.wake(); lenis.scrollTo(0, { duration: 1.8, easing: t => 1 - Math.pow(1 - t, 4) }); });
 
   addEventListener('resize', () => { layoutWhy(); ScrollTrigger.refresh(); });
   Promise.all([...parts.map(p => p.im.decode().catch(() => {})), asm.decode().catch(() => {})]).then(() => { layoutWhy(); ScrollTrigger.refresh(); });
