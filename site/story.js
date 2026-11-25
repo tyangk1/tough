@@ -101,8 +101,8 @@
   // ---------- 4. the end: one more drop, played once when you get there ----------
   const endSvg = $('#endSvg'); let crackPaths = [];
   function buildCracks() {
-    const sec = $('#end'), w = sec.offsetWidth, h = sec.offsetHeight, wr = $('#endWatch').getBoundingClientRect(), sr = sec.getBoundingClientRect();
-    const cx = wr.left - sr.left + wr.width / 2, cy = wr.top - sr.top + wr.height * .55;
+    const sec = $('#end'), w = sec.offsetWidth, h = sec.offsetHeight, we = $('#endWatch');
+    const cx = we.offsetLeft + we.offsetWidth / 2, cy = we.offsetTop + we.offsetHeight * .55;   // layout position, not the mid-drop transform
     endSvg.setAttribute('viewBox', `0 0 ${w} ${h}`); endSvg.innerHTML = ''; crackPaths = [];
     let seed = 3; const R = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
     for (let j = 0; j < 16; j++) { let a = j / 16 * Math.PI * 2 + R() * .3, x = cx, y = cy, d = `M${x.toFixed(1)},${y.toFixed(1)}`; const len = (R() * .5 + .5) * Math.max(w, h) * .55;
