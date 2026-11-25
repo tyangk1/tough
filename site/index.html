@@ -25,7 +25,8 @@ body{font-family:'Archivo Black',system-ui,sans-serif;overflow-x:clip}
 #hero{position:relative;height:100svh;min-height:620px;overflow:hidden;user-select:none;-webkit-user-select:none}
 #tilt{position:absolute;inset:0;transform-origin:50% 100%;will-change:transform}
 #stage{position:absolute;inset:0}
-#dim{position:absolute;inset:0;background:#0B0B0B;opacity:0;pointer-events:none;z-index:20}
+#dim{position:absolute;inset:0;background:#0B0B0B;clip-path:circle(0px at 50% 60%);pointer-events:none;z-index:5;will-change:clip-path}
+#rim{position:absolute;left:0;top:0;border-radius:50%;border:3px solid var(--r);box-shadow:0 0 0 1px rgba(0,0,0,.4),0 0 24px rgba(232,32,42,.45);opacity:0;pointer-events:none;z-index:5;will-change:transform}
 .grain{position:absolute;inset:0;opacity:.35;pointer-events:none;background-image:radial-gradient(rgba(0,0,0,.09) .6px,transparent .7px),radial-gradient(rgba(255,255,255,.35) .6px,transparent .7px);background-size:7px 7px,11px 11px;background-position:0 0,3px 5px}
 .nav{position:absolute;left:0;right:0;top:0;height:64px;display:flex;align-items:center;justify-content:space-between;padding:0 22px;z-index:15}
 .brand{font:400 22px/1 'Archivo Black';letter-spacing:.02em}
@@ -127,11 +128,12 @@ html.lenis,html.lenis body{height:auto}.lenis.lenis-smooth{scroll-behavior:auto!
     <div id="watch" role="img" aria-label="A rugged black watch"><div id="wf"><img src="img/watch.webp" alt="" draggable="false"><div class="sheen"></div><div class="lcd"><span id="hh">10:58</span><small id="ss">36</small></div></div></div>
     <div id="stamp">PASSED</div>
     <div class="after" id="after"><div><span>Built to take the fall.</span></div><p>STILL TICKING. KEEP SCROLLING.</p></div>
+    <div id="dim"></div><div id="rim"></div>
     <div class="cue" id="cue">SCROLL TO DROP IT<i></i></div>
     <div class="legal">Unofficial fan concept. Not affiliated with or endorsed by Casio. Images are AI-generated.</div>
   </div></div>
   <header class="nav"><div class="brand">G-SHOCK</div><nav class="links" aria-hidden="true"><span>TEST LAB</span><span>TOUGHNESS</span><span>COLOURS</span></nav><button id="snd" aria-pressed="false">SOUND OFF</button></header>
-  <div id="flash"></div><div id="dim"></div>
+  <div id="flash"></div>
 </section>
 <section class="sec" id="why" aria-label="Why it survives">
   <div class="head"><div class="kick">02 // TOUGHNESS</div><h2 class="h2 split">Why it survives</h2><div class="rule"></div></div>

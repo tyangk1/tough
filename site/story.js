@@ -31,14 +31,20 @@
     if (HW.drop > .995 && HW.lift > .5) heroAPI.impact(); else if (HW.drop < .9) heroAPI.heal();
     const af = $('#after'); af.style.top = (L.cy + L.ww * .887 + 16) + 'px'; af.style.opacity = HW.after; af.querySelector('div span').style.transform = `skewX(-9deg) translateY(${(1 - HW.after) * 100}%)`;
     $('#cue').style.opacity = cl(1 - HW.lift * 3);
-    $('#tilt').style.transform = HW.tip > 0 ? `perspective(1100px) rotateX(${62 * HW.tip}deg) translateY(${10 * HW.tip}%) scale(${1 - .2 * HW.tip})` : '';
-    $('#dim').style.opacity = .72 * HW.tip;
+    // exit: the impact hole opens from where the watch hit and swallows the page (no 3D tilt)
+    const T = HW.tip, Rmax = Math.hypot(Math.max(L.cx, L.W - L.cx), Math.max(L.cy, L.H - L.cy)) * 1.05, Rr = Rmax * Math.pow(T, 1.35);
+    $('#dim').style.clipPath = `circle(${Rr.toFixed(1)}px at ${L.cx}px ${L.cy}px)`;
+    const rim = $('#rim'); rim.style.width = rim.style.height = (Rr * 2) + 'px'; rim.style.transform = `translate(${L.cx - Rr}px,${L.cy - Rr}px)`; rim.style.opacity = T > 0 && T < .98 ? Math.min(1, T * 8) * (1 - T) * 1.4 : 0;
+    const wo = 1 - Math.max(0, (T - .55) / .45);
+    $('#watch').style.opacity = wo; $('#shadow').style.opacity = (parseFloat(sh.style.opacity) * (1 - T)).toFixed(3);
+    if (T > 0) $('#watch').style.transform += ` scale(${1 - .18 * T})`;
+    ['#after', '#stamp', '#cue', '.legal'].forEach(q => { $(q).style.filter = T > 0 ? `opacity(${cl(1 - T * 2.2).toFixed(3)})` : ''; });   // filter, so it also wins over the stamp's fill-forwards animation
   }
   const heroTL = gsap.timeline({ scrollTrigger: { trigger: '#hero', start: 'top top', end: '+=170%', scrub: .5, pin: true, onRefresh: () => renderHero() } });
   heroTL.to(HW, { lift: 1, duration: .22, ease: 'power2.out' }, .03)
     .to(HW, { drop: 1, duration: .1, ease: 'power3.in' }, .3)
     .to(HW, { after: 1, duration: .12, ease: 'power2.out' }, .46)
-    .to(HW, { tip: 1, duration: .28, ease: 'power2.in' }, .72);
+    .to(HW, { tip: 1, duration: .3, ease: 'power1.inOut' }, .68);
   end1(heroTL); heroTL.eventCallback('onUpdate', renderHero);
   addEventListener('hero-ready', renderHero); renderHero();
 
@@ -81,7 +87,7 @@
     if (armed && lastEx > .02 && P.ex <= .02 && prog > .7) { armed = false; impact($('#why'), .55); if (!RM) gsap.fromTo('#whyFlash', { opacity: .9 }, { opacity: 0, duration: .22, ease: 'power2.out' }); }
     lastEx = P.ex; $('#still').style.opacity = P.tag; $('#still').style.transform = `skewX(-8deg) scale(${lerp(1.4, 1, P.tag)})`;
   }
-  const inWhy = gsap.timeline({ scrollTrigger: { trigger: '#why', start: 'top 85%', end: 'top 5%', scrub: .4 } });
+  const inWhy = gsap.timeline({ scrollTrigger: { trigger: '#why', start: 'top 100%', end: 'top 20%', scrub: .4 } });
   dropLetters(inWhy, '#why .ch', 0, 1); inWhy.from('#why .rule', { scaleX: 0, transformOrigin: '0 50%', duration: .3, ease: 'power3.out' }, .7)
     .to(P, { show: 1, duration: .4, ease: 'power2.out', onUpdate: () => renderWhy(0) }, .6);
   const whyTL = gsap.timeline({ scrollTrigger: { trigger: '#why', start: 'top top', end: '+=220%', scrub: .5, pin: true, onRefresh: () => renderWhy(whyTL.progress()) } });
